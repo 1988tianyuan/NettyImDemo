@@ -1,3 +1,4 @@
+import channelHandler.FirstServerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,8 @@ public class NettyServer {
                        })
                        .childHandler(new ChannelInitializer<NioSocketChannel>() {
                            protected void initChannel(NioSocketChannel nioSocketChannel){
-
+                               //逻辑处理链pipeline添加逻辑处理器，当接收到客户端数据时回调FirstServerHandler中的read方法
+                                nioSocketChannel.pipeline().addLast(new FirstServerHandler());
                            }
                        })
                        .attr(AttributeKey.newInstance("serverName"), "nettyServer")
@@ -52,9 +54,9 @@ public class NettyServer {
         //绑定端口是一个异步过程，设置回调方法查看是否绑定成功
         serverBootstrap.bind(8000).addListener(future -> {
             if(future.isSuccess()){
-                logger.debug("端口绑定成功！");
+                logger.debug("8000端口绑定成功！");
             }else {
-                logger.debug("端口绑定失败！");
+                logger.debug("8000端口绑定失败！");
             }
         });
 
