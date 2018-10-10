@@ -12,15 +12,25 @@ public class FirstServerHandler extends ChannelInboundHandlerAdapter{
     private static Logger logger = LoggerFactory.getLogger(FirstServerHandler.class);
 
     @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        ByteBuf buffer = ctx.alloc().buffer();
+        byte[] bytes = "我们已经连接上啦！".getBytes(Charset.forName("UTF-8"));
+        buffer.writeBytes(bytes);
+        logger.debug("有客户端连接过来，向客户端发送信息：" + buffer.toString(Charset.forName("UTF-8")));
+        ctx.channel().writeAndFlush(buffer);
+    }
+
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         //服务器端收到数据
         ByteBuf buffer = (ByteBuf) msg;
         logger.debug("服务器端读到数据：" + buffer.toString(Charset.forName("UTF-8")));
 
         ByteBuf outBuffer = getByteBuf(ctx);
+        logger.debug("服务器端写出数据：" + outBuffer.toString(Charset.forName("UTF-8")));
         //向服务器端写数据
         ctx.channel().writeAndFlush(outBuffer);
-        logger.debug("服务器端写出数据");
+
     }
 
     private ByteBuf getByteBuf(ChannelHandlerContext ctx) {

@@ -9,6 +9,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -43,6 +44,8 @@ public class NettyServer {
                            protected void initChannel(NioSocketChannel nioSocketChannel){
                                //逻辑处理链pipeline添加逻辑处理器，当接收到客户端数据时回调FirstServerHandler中的read方法
                                 nioSocketChannel.pipeline().addLast(new FirstServerHandler());
+                                Attribute<String> attr = nioSocketChannel.attr(AttributeKey.valueOf("clientKey"));
+                                logger.debug("attr是：" + attr.get());
                            }
                        })
                        .attr(AttributeKey.newInstance("serverName"), "nettyServer")
@@ -59,6 +62,5 @@ public class NettyServer {
                 logger.debug("8000端口绑定失败！");
             }
         });
-
     }
 }

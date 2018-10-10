@@ -16,14 +16,15 @@ public class FirstClientHandler extends ChannelInboundHandlerAdapter{
         //获取上下文中已经填充好数据的ByteBuf
         ByteBuf buffer = getByteBuf(ctx);
         //向服务器端写数据
+        logger.debug("客户端写出数据：" + buffer.toString(Charset.forName("UTF-8")));
         ctx.channel().writeAndFlush(buffer);
-        logger.debug("客户端写出数据");
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         //客户端收到数据
         ByteBuf buffer = (ByteBuf) msg;
+        logger.debug("可读字节数：" + buffer.readableBytes());
         logger.debug("客户端读到数据：" + buffer.toString(Charset.forName("UTF-8")));
     }
 
