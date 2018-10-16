@@ -1,4 +1,5 @@
 import channelHandler.FirstServerHandler;
+import channelHandler.ServerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +43,8 @@ public class NettyServer {
                        })
                        .childHandler(new ChannelInitializer<NioSocketChannel>() {
                            protected void initChannel(NioSocketChannel nioSocketChannel){
-                               //逻辑处理链pipeline添加逻辑处理器，当接收到客户端数据时回调FirstServerHandler中的read方法
-                                nioSocketChannel.pipeline().addLast(new FirstServerHandler());
+                               //（责任链模式）pipeline添加逻辑处理器，当接收到客户端数据时回调FirstServerHandler中的read方法
+                                nioSocketChannel.pipeline().addLast(new ServerHandler());
                                 Attribute<String> attr = nioSocketChannel.attr(AttributeKey.valueOf("clientKey"));
                                 logger.debug("attr是：" + attr.get());
                            }

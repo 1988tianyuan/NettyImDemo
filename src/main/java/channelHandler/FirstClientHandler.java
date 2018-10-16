@@ -5,11 +5,15 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import protocal.PacketCodeC;
+import protocal.model.LoginRequestPacket;
+import protocal.model.Packet;
 
 import java.nio.charset.Charset;
 
 public class FirstClientHandler extends ChannelInboundHandlerAdapter{
     private static Logger logger = LoggerFactory.getLogger(FirstClientHandler.class);
+    private final PacketCodeC packetCodeC = new PacketCodeC();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -30,11 +34,12 @@ public class FirstClientHandler extends ChannelInboundHandlerAdapter{
 
     //向上下文中的ByteBuf填充数据
     private ByteBuf getByteBuf(ChannelHandlerContext ctx) {
-        //获取二进制抽象ByteBuf
-        ByteBuf buffer = ctx.alloc().buffer();
-        byte[] bytes = "这是一行文字".getBytes(Charset.forName("UTF-8"));
-        buffer.writeBytes(bytes);
-        return buffer;
+        LoginRequestPacket packet = new LoginRequestPacket();
+        packet.setUserId("111");
+        packet.setUserName("刘耕");
+        packet.setPassword("123456");
+        ByteBuf buf = packetCodeC.encode(ctx.alloc().ioBuffer(), packet);
+        return buf;
     }
 
 

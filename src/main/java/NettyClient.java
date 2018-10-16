@@ -1,3 +1,4 @@
+import channelHandler.ClientHandler;
 import channelHandler.FirstClientHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.util.AttributeKey;
@@ -29,8 +30,8 @@ public class NettyClient {
 				 .handler(new ChannelInitializer<NioSocketChannel>() {
 					 @Override
 					 protected void initChannel(NioSocketChannel nioSocketChannel) {
-					 	//向服务器端传输数据，
-						 nioSocketChannel.pipeline().addLast(new FirstClientHandler());
+					 	//添加ClientHandler，向服务器端传输数据
+						 nioSocketChannel.pipeline().addLast(new ClientHandler());
 					 }
 				 }).attr(AttributeKey.newInstance("attrName"), "attrValue")
 				 .option(ChannelOption.SO_KEEPALIVE, true)

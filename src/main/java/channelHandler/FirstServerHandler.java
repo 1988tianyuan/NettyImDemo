@@ -5,11 +5,15 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import protocal.PacketCodeC;
+import protocal.model.LoginRequestPacket;
+import protocal.model.Packet;
 
 import java.nio.charset.Charset;
 
 public class FirstServerHandler extends ChannelInboundHandlerAdapter{
     private static Logger logger = LoggerFactory.getLogger(FirstServerHandler.class);
+    private final PacketCodeC packetCodeC = new PacketCodeC();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -26,16 +30,18 @@ public class FirstServerHandler extends ChannelInboundHandlerAdapter{
         ByteBuf buffer = (ByteBuf) msg;
         logger.debug("服务器端读到数据：" + buffer.toString(Charset.forName("UTF-8")));
 
-        ByteBuf outBuffer = getByteBuf(ctx);
+        LoginRequestPacket packet = (LoginRequestPacket) packetCodeC.decode(buffer);
+
+        ByteBuf outBuffer = getByteBuf(ctx, packet);
         logger.debug("服务器端写出数据：" + outBuffer.toString(Charset.forName("UTF-8")));
         //向服务器端写数据
         ctx.channel().writeAndFlush(outBuffer);
 
     }
 
-    private ByteBuf getByteBuf(ChannelHandlerContext ctx) {
+    private ByteBuf getByteBuf(ChannelHandlerContext ctx, Packet packet) {
         ByteBuf outBuffer = ctx.alloc().buffer();
-        byte[] bytes = "好了我知道了".getBytes(Charset.forName("UTF-8"));
+        byte[] bytes = ("好了我知道你发的是：" + packet.toString()).getBytes(Charset.forName("UTF-8"));
         outBuffer.writeBytes(bytes);
         return outBuffer;
     }
