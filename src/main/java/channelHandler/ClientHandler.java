@@ -1,6 +1,7 @@
 package channelHandler;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
@@ -8,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import protocal.PacketCodeC;
 import protocal.model.LoginRequestPacket;
 import protocal.model.LoginResponsePacket;
+import protocal.model.MessageResponsePacket;
 import protocal.model.Packet;
+import utils.LoginUtil;
 
 import java.util.Date;
 import java.util.UUID;
@@ -38,13 +41,19 @@ public class ClientHandler extends ChannelInboundHandlerAdapter{
         Packet packet = PacketCodeC.decode(buf);
         if(packet instanceof LoginResponsePacket){
             LoginResponsePacket lrpPacket = (LoginResponsePacket) packet;
-            handleLoginRsp(lrpPacket);
+            handleLoginRsp(lrpPacket, ctx.channel());
+        }else if (packet instanceof MessageResponsePacket){
+            MessageResponsePacket mpPacket = (MessageResponsePacket) packet;
+            String message = mpPacket.getMessage();
+            System.out.println("服务器端回复：" + message);
         }
     }
 
-    private void handleLoginRsp(LoginResponsePacket lrpPacket){
+    private void handleLoginRsp(LoginResponsePacket lrpPacket, Channel channel){
         boolean success = lrpPacket.isSuccess();
         if(success){
+            //标记为登录成功
+            LoginUtil.markAsLogin(channel);
             logger.debug("登录成功");
         }else {
             logger.error("登录失败，原因是: " + lrpPacket.getReason());

@@ -1,5 +1,8 @@
 import channelHandler.ClientHandler;
 import channelHandler.FirstClientHandler;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.util.AttributeKey;
 import org.slf4j.Logger;
@@ -9,7 +12,11 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import protocal.PacketCodeC;
+import protocal.model.MessageRequestPacket;
+import utils.LoginUtil;
 
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class NettyClient {
@@ -30,7 +37,7 @@ public class NettyClient {
 				 .handler(new ChannelInitializer<NioSocketChannel>() {
 					 @Override
 					 protected void initChannel(NioSocketChannel nioSocketChannel) {
-					 	//添加ClientHandler，向服务器端传输数据
+					 	//添加ClientHandler，连接上后向服务器端传输数据
 						 nioSocketChannel.pipeline().addLast(new ClientHandler());
 					 }
 				 }).attr(AttributeKey.newInstance("attrName"), "attrValue")
@@ -47,6 +54,9 @@ public class NettyClient {
 		bootstrap.connect(host, port).addListener(future -> {
 			if(future.isSuccess()){
 				logger.debug("连接建立成功！");
+				//连接成功后获取channel，启动控制台线程，和服务端对话
+				Channel channel = ((ChannelFuture) future).channel();
+				startConsoleThread(channel);
 			}else if(retry == 0){
 				logger.debug("重试次数已经用尽，放弃连接！");
 			}else {
@@ -57,6 +67,33 @@ public class NettyClient {
 				bootstrap.config().group().schedule(() -> connect(bootstrap, host, port, retry-1), delay, TimeUnit.SECONDS);
 			}
 		});
+	}
+
+	private static void startConsoleThread(Channel channel) {
+		new Thread(
+			()-> {
+				while (!Thread.interrupted()){
+					//判断是否登录
+					if(LoginUtil.hasLogin(channel)){
+						logger.debug("写消息发送至服务器");
+						Scanner sc = new Scanner(System.in);
+						String line = sc.nextLine();
+						MessageRequestPacket mqPacket = new MessageRequestPacket();
+						mqPacket.setMessage(line);
+						ByteBuf buf = PacketCodeC.encode(channel.alloc().ioBuffer(), mqPacket);
+						channel.writeAndFlush(buf);
+					}else {
+						logger.debug("未登录");
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		).start();
+
 	}
 }
 

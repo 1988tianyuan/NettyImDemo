@@ -2,9 +2,7 @@ package protocal;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import protocal.model.LoginRequestPacket;
-import protocal.model.LoginResponsePacket;
-import protocal.model.Packet;
+import protocal.model.*;
 import protocal.support.JSONserializer;
 
 public class PacketCodeC {
@@ -53,6 +51,10 @@ public class PacketCodeC {
                 return LoginRequestPacket.class;
             case 2:
                 return LoginResponsePacket.class;
+            case 3:
+                return MessageRequestPacket.class;
+            case 4:
+                return MessageResponsePacket.class;
             default:
                 return null;
         }

@@ -4,9 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import protocal.PacketCodeC;
-import protocal.model.LoginRequestPacket;
-import protocal.model.LoginResponsePacket;
-import protocal.model.Packet;
+import protocal.model.*;
 
 import java.nio.charset.Charset;
 
@@ -18,6 +16,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        ctx.channel();
         ByteBuf buf = (ByteBuf) msg;
         Packet packet = PacketCodeC.decode(buf);
         if(packet instanceof LoginRequestPacket){
@@ -36,6 +35,16 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
                 PacketCodeC.encode(outerBuf, lrpPacket);
             }
             ctx.channel().writeAndFlush(outerBuf);
+        }else if (packet instanceof MessageRequestPacket){
+            //接收到客户端对话消息
+            MessageRequestPacket mqPacket = (MessageRequestPacket) packet;
+            String message = mqPacket.getMessage();
+            System.out.println("客户端说：" + message);
+            MessageResponsePacket mpPacket = new MessageResponsePacket();
+            mpPacket.setMessage("好了好了我收到了，哎...");
+            ByteBuf responseBuf = PacketCodeC.encode(ctx.alloc().ioBuffer(), mpPacket);
+            ctx.channel().writeAndFlush(responseBuf);
+            System.out.println("服务端说："  + mpPacket.getMessage());
         }
 
     }
