@@ -1,5 +1,4 @@
-import channelHandler.ClientHandler;
-import channelHandler.FirstClientHandler;
+import channelHandler.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -38,7 +37,11 @@ public class NettyClient {
 					 @Override
 					 protected void initChannel(NioSocketChannel nioSocketChannel) {
 					 	//添加ClientHandler，连接上后向服务器端传输数据
-						 nioSocketChannel.pipeline().addLast(new ClientHandler());
+						 nioSocketChannel.pipeline()
+								 .addLast(new PacketDecoder())
+						 		 .addLast(new LoginResponseHandler())
+						 		 .addLast(new MessageResponseHandler())
+						 		 .addLast(new PacketEncoder());
 					 }
 				 }).attr(AttributeKey.newInstance("attrName"), "attrValue")
 				 .option(ChannelOption.SO_KEEPALIVE, true)
@@ -80,8 +83,8 @@ public class NettyClient {
 						String line = sc.nextLine();
 						MessageRequestPacket mqPacket = new MessageRequestPacket();
 						mqPacket.setMessage(line);
-						ByteBuf buf = PacketCodeC.encode(channel.alloc().ioBuffer(), mqPacket);
-						channel.writeAndFlush(buf);
+//						ByteBuf buf = PacketCodeC.encode(channel.alloc().ioBuffer(), mqPacket);
+						channel.writeAndFlush(mqPacket);
 					}else {
 						logger.debug("未登录");
 						try {

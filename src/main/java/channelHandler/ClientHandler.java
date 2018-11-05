@@ -16,6 +16,10 @@ import utils.LoginUtil;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * 把所有逻辑都写到同一个handler里，明显不可取
+ */
+@Deprecated
 public class ClientHandler extends ChannelInboundHandlerAdapter{
 
     private static Logger logger = LoggerFactory.getLogger(ClientHandler.class);

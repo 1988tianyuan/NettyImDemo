@@ -8,6 +8,10 @@ import protocal.model.*;
 
 import java.nio.charset.Charset;
 
+/**
+ * 把所有逻辑都写到同一个handler里，明显不可取
+ */
+@Deprecated
 public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     private static final String VALID_MSG = "登录成功啦";
@@ -16,7 +20,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ctx.channel();
         ByteBuf buf = (ByteBuf) msg;
         Packet packet = PacketCodeC.decode(buf);
         if(packet instanceof LoginRequestPacket){
