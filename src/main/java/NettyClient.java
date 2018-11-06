@@ -38,6 +38,7 @@ public class NettyClient {
 					 protected void initChannel(NioSocketChannel nioSocketChannel) {
 					 	//添加ClientHandler，连接上后向服务器端传输数据
 						 nioSocketChannel.pipeline()
+								 .addLast(new Spliter())
 								 .addLast(new PacketDecoder())
 						 		 .addLast(new LoginResponseHandler())
 						 		 .addLast(new MessageResponseHandler())

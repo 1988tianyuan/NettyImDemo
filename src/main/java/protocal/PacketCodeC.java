@@ -7,7 +7,7 @@ import protocal.support.JSONserializer;
 
 public class PacketCodeC {
 
-    private static final int MAGIC_NUMBER = 0x12345678;
+    public static final int MAGIC_NUMBER = 0x12345678;
 
     //对象编码，返回
     public static ByteBuf encode(ByteBuf byteBuf, Packet packet){
