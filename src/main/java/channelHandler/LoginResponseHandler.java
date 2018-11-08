@@ -18,20 +18,6 @@ public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginRespo
     private static Logger logger = LoggerFactory.getLogger(LoginResponseHandler.class);
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        logger.debug("客户端开始登录...");
-
-        //生成登录信息
-        LoginRequestPacket packet = new LoginRequestPacket();
-        packet.setUserName("liugeng");
-        packet.setPassword("123456");
-        packet.setUserId(UUID.randomUUID().toString());
-
-        ctx.channel().writeAndFlush(packet);
-//        super.channelActive(ctx);
-    }
-
-    @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, LoginResponsePacket loginResponsePacket) throws Exception {
         handleLoginRsp(loginResponsePacket, channelHandlerContext.channel());
     }
@@ -39,9 +25,10 @@ public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginRespo
     private void handleLoginRsp(LoginResponsePacket lrpPacket, Channel channel){
         boolean success = lrpPacket.isSuccess();
         if(success){
+            String userId = lrpPacket.getUserId();
+            System.out.println("登录成功, 你的id是： " + userId);
             //标记为登录成功
             LoginUtil.markAsLogin(channel);
-            logger.debug("登录成功");
         }else {
             logger.error("登录失败，原因是: " + lrpPacket.getReason());
         }

@@ -12,6 +12,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import protocal.PacketCodeC;
+import protocal.model.LoginRequestPacket;
 import protocal.model.MessageRequestPacket;
 import utils.LoginUtil;
 
@@ -74,20 +75,31 @@ public class NettyClient {
 	}
 
 	private static void startConsoleThread(Channel channel) {
+		Scanner sc = new Scanner(System.in);
+		LoginRequestPacket lrqPacket = new LoginRequestPacket();
 		new Thread(
 			()-> {
-				while (!Thread.interrupted()){
+				while (!Thread.interrupted()) {
 					//判断是否登录
-					if(LoginUtil.hasLogin(channel)){
+					if(LoginUtil.hasLogin(channel)) {
 						logger.debug("写消息发送至服务器");
-						Scanner sc = new Scanner(System.in);
+						System.out.println("请输入对方id： ");
+						String toUserId = sc.nextLine();
+						System.out.println("请输要发送的消息：");
 						String line = sc.nextLine();
 						MessageRequestPacket mqPacket = new MessageRequestPacket();
+						mqPacket.setToUserId(toUserId);
 						mqPacket.setMessage(line);
-//						ByteBuf buf = PacketCodeC.encode(channel.alloc().ioBuffer(), mqPacket);
 						channel.writeAndFlush(mqPacket);
 					}else {
-						logger.debug("未登录");
+						logger.debug("客户端开始登录...");
+						System.out.println("请输入用户名：");
+						String userName = sc.nextLine();
+						System.out.println("请输入密码：");
+						String pwd = sc.nextLine();
+						lrqPacket.setUserName(userName);
+						lrqPacket.setPassword(pwd);
+						channel.writeAndFlush(lrqPacket);
 						try {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {

@@ -45,9 +45,10 @@ public class NettyServer {
                                //（责任链模式）pipeline添加逻辑处理器，当接收到客户端数据时按顺序执行回调
                                 nioSocketChannel.pipeline()
                                         .addLast(new Spliter())
-                                        .addLast(new LifeCycleTestHandler())
+//                                        .addLast(new LifeCycleTestHandler())
                                         .addLast(new PacketDecoder())
                                         .addLast(new LoginRequestHandler())
+                                        .addLast(new AuthHandler())
                                         .addLast(new MessageRequestHandler())
                                         .addLast(new PacketEncoder());
                            }

@@ -48,6 +48,7 @@ public class LifeCycleTestHandler extends ChannelInboundHandlerAdapter{
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("channel关闭：channelInactive");
+        i.decrementAndGet();
         super.channelInactive(ctx);
     }
 
