@@ -6,7 +6,7 @@ import protocal.Command;
 @Data
 public class LoginResponsePacket extends Packet {
 
-    private String userId;
+    private Session session;
     private boolean success;
     private String reason;
 

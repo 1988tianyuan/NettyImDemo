@@ -1,18 +1,16 @@
 import channelHandler.*;
+import channelHandler.client.PacketCodecHandler;
+import channelHandler.server.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 
 public class NettyServer {
 
@@ -46,11 +44,16 @@ public class NettyServer {
                                 nioSocketChannel.pipeline()
                                         .addLast(new Spliter())
 //                                        .addLast(new LifeCycleTestHandler())
-                                        .addLast(new PacketDecoder())
-                                        .addLast(new LoginRequestHandler())
+                                        .addLast(PacketCodecHandler.INSTANCE)
+                                        .addLast(LoginRequestHandler.INSTANCE)
                                         .addLast(new AuthHandler())
+                                        .addLast(new CreateGroupRequestHandler())
+                                        .addLast(new JoinGroupRequestHandler())
+                                        .addLast(new MemberListRequestHandler())
+                                        .addLast(new QuitGroupRequestHandler())
+                                        .addLast(new GroupMsgRequestHandler())
                                         .addLast(new MessageRequestHandler())
-                                        .addLast(new PacketEncoder());
+                                        .addLast(new ExceptionCaughtHandler());
                            }
                        })
                        .attr(AttributeKey.newInstance("serverName"), "nettyServer")

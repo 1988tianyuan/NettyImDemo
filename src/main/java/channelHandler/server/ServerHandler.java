@@ -1,4 +1,4 @@
-package channelHandler;
+package channelHandler.server;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

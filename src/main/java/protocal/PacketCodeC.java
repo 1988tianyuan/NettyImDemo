@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import protocal.model.*;
 import protocal.support.JSONserializer;
+import sun.awt.geom.AreaOp;
 
 public class PacketCodeC {
 
@@ -55,6 +56,24 @@ public class PacketCodeC {
                 return MessageRequestPacket.class;
             case 4:
                 return MessageResponsePacket.class;
+            case 5:
+                return CreateGroupRequestPacket.class;
+            case 6:
+                return CreateGroupResponsePacket.class;
+            case 7:
+                return JoinGroupRequestPacket.class;
+            case 8:
+                return JoinGroupResponsePacket.class;
+            case 9:
+                return QuitGroupRequestPacket.class;
+            case 10:
+                return QuitGroupResponsePacket.class;
+            case 11:
+                return MemberListRequestPacket.class;
+            case 12:
+                return MemberListResponsePacket.class;
+            case 13:
+                return GroupMessageRequestPacket.class;
             default:
                 return null;
         }

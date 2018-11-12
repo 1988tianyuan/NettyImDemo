@@ -1,4 +1,4 @@
-package channelHandler;
+package channelHandler.client;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import protocal.PacketCodeC;
 import protocal.model.LoginRequestPacket;
-import protocal.model.Packet;
 
 import java.nio.charset.Charset;
 

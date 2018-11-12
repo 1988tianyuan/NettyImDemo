@@ -1,17 +1,13 @@
-package channelHandler;
+package channelHandler.client;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import protocal.PacketCodeC;
-import protocal.model.LoginRequestPacket;
 import protocal.model.LoginResponsePacket;
+import protocal.model.Session;
 import utils.LoginUtil;
-
-import java.util.UUID;
 
 public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginResponsePacket> {
 
@@ -25,10 +21,10 @@ public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginRespo
     private void handleLoginRsp(LoginResponsePacket lrpPacket, Channel channel){
         boolean success = lrpPacket.isSuccess();
         if(success){
-            String userId = lrpPacket.getUserId();
-            System.out.println("登录成功, 你的id是： " + userId);
+            Session session = lrpPacket.getSession();
+            System.out.println("登录成功, 你的id是： " + session.getUserId());
             //标记为登录成功
-            LoginUtil.markAsLogin(channel);
+            LoginUtil.markAsLogin(channel, session);
         }else {
             logger.error("登录失败，原因是: " + lrpPacket.getReason());
         }

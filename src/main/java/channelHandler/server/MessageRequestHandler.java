@@ -1,4 +1,4 @@
-package channelHandler;
+package channelHandler.server;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -32,12 +32,12 @@ public class MessageRequestHandler extends SimpleChannelInboundHandler<MessageRe
     }
 
     //接收到客户端对话消息
-    private MessageResponsePacket handleMessage(MessageRequestPacket packet) {
-        String message = packet.getMessage();
-        System.out.println("客户端说：" + message);
-        MessageResponsePacket mpPacket = new MessageResponsePacket();
-        mpPacket.setMessage("好了好了我收到了，哎...");
-        System.out.println("服务端说："  + mpPacket.getMessage());
-        return mpPacket;
-    }
+//    private MessageResponsePacket handleMessage(MessageRequestPacket packet) {
+//        String message = packet.getMessage();
+//        System.out.println("客户端说：" + message);
+//        MessageResponsePacket mpPacket = new MessageResponsePacket();
+//        mpPacket.setMessage("好了好了我收到了，哎...");
+//        System.out.println("服务端说："  + mpPacket.getMessage());
+//        return mpPacket;
+//    }
 }

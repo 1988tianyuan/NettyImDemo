@@ -1,4 +1,4 @@
-package channelHandler;
+package channelHandler.client;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -13,7 +13,6 @@ import protocal.model.MessageResponsePacket;
 import protocal.model.Packet;
 import utils.LoginUtil;
 
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -57,7 +56,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter{
         boolean success = lrpPacket.isSuccess();
         if(success){
             //标记为登录成功
-            LoginUtil.markAsLogin(channel);
+//            LoginUtil.markAsLogin(channel);
             logger.debug("登录成功");
         }else {
             logger.error("登录失败，原因是: " + lrpPacket.getReason());

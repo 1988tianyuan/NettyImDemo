@@ -1,5 +1,9 @@
 import channelHandler.*;
-import io.netty.buffer.ByteBuf;
+import channelHandler.client.*;
+import channelHandler.ExceptionCaughtHandler;
+import channelHandler.server.Spliter;
+import console.ConsoleCommandManager;
+import console.LoginConsoleCommand;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -11,9 +15,6 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import protocal.PacketCodeC;
-import protocal.model.LoginRequestPacket;
-import protocal.model.MessageRequestPacket;
 import utils.LoginUtil;
 
 import java.util.Scanner;
@@ -39,11 +40,16 @@ public class NettyClient {
 					 protected void initChannel(NioSocketChannel nioSocketChannel) {
 					 	//添加ClientHandler，连接上后向服务器端传输数据
 						 nioSocketChannel.pipeline()
+								 .addLast(new ExceptionCaughtHandler())
 								 .addLast(new Spliter())
-								 .addLast(new PacketDecoder())
+								 .addLast(PacketCodecHandler.INSTANCE)
 						 		 .addLast(new LoginResponseHandler())
-						 		 .addLast(new MessageResponseHandler())
-						 		 .addLast(new PacketEncoder());
+								 .addLast(new CreateGroupResponseHandler())
+								 .addLast(new JoinGroupResponseHandler())
+								 .addLast(new MemberListResponseHandler())
+								 .addLast(new GroupMsgResponseHandler())
+								 .addLast(new QuitGroupResponseHandler())
+						 		 .addLast(new MessageResponseHandler());
 					 }
 				 }).attr(AttributeKey.newInstance("attrName"), "attrValue")
 				 .option(ChannelOption.SO_KEEPALIVE, true)
@@ -76,30 +82,18 @@ public class NettyClient {
 
 	private static void startConsoleThread(Channel channel) {
 		Scanner sc = new Scanner(System.in);
-		LoginRequestPacket lrqPacket = new LoginRequestPacket();
+		ConsoleCommandManager manager = new ConsoleCommandManager();
+		LoginConsoleCommand loginConsoleCommand = new LoginConsoleCommand();
+
 		new Thread(
 			()-> {
 				while (!Thread.interrupted()) {
 					//判断是否登录
 					if(LoginUtil.hasLogin(channel)) {
-						logger.debug("写消息发送至服务器");
-						System.out.println("请输入对方id： ");
-						String toUserId = sc.nextLine();
-						System.out.println("请输要发送的消息：");
-						String line = sc.nextLine();
-						MessageRequestPacket mqPacket = new MessageRequestPacket();
-						mqPacket.setToUserId(toUserId);
-						mqPacket.setMessage(line);
-						channel.writeAndFlush(mqPacket);
+						manager.exec(sc, channel);
 					}else {
-						logger.debug("客户端开始登录...");
-						System.out.println("请输入用户名：");
-						String userName = sc.nextLine();
-						System.out.println("请输入密码：");
-						String pwd = sc.nextLine();
-						lrqPacket.setUserName(userName);
-						lrqPacket.setPassword(pwd);
-						channel.writeAndFlush(lrqPacket);
+						System.out.println("未登录，请先登录！");
+						loginConsoleCommand.exec(sc, channel);
 						try {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {

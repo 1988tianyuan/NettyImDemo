@@ -1,6 +1,7 @@
 package utils;
 
 import io.netty.channel.Channel;
+import io.netty.channel.group.ChannelGroup;
 import protocal.model.Session;
 
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SessionUtil {
 
     private static final Map<String, Channel> userIdChannelMap = new ConcurrentHashMap<>();
+    private static final Map<String, ChannelGroup> groupChannelMap = new ConcurrentHashMap<>();
 
     public static void bindSession(Session session, Channel channel) {
         userIdChannelMap.put(session.getUserId(), channel);
@@ -30,5 +32,11 @@ public class SessionUtil {
         return userIdChannelMap.get(userId);
     }
 
+    public static void setChannelGroup(String groupId, ChannelGroup channelGroup) {
+        groupChannelMap.put(groupId, channelGroup);
+    }
 
+    public static ChannelGroup getChannelGroup(String groupId) {
+        return groupChannelMap.get(groupId);
+    }
 }
