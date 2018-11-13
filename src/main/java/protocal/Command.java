@@ -13,7 +13,8 @@ public enum Command {
     QUIT_GROUP_RESPONSE((byte) 10),
     MEMBER_REQUEST((byte) 11),
     MEMBER_RESPONSE((byte) 12),
-    GROUP_MSG_REQUEST((byte) 13);
+    GROUP_MSG_REQUEST((byte) 13),
+    LOGOUT_REQUEST((byte) 14);
 
     private byte value;
 

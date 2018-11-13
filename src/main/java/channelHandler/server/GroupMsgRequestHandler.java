@@ -8,6 +8,10 @@ import utils.Constants;
 import utils.SessionUtil;
 
 public class GroupMsgRequestHandler extends SimpleChannelInboundHandler<GroupMessageRequestPacket> {
+
+    public static final GroupMsgRequestHandler INSTANCE = new GroupMsgRequestHandler();
+    private GroupMsgRequestHandler() {}
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, GroupMessageRequestPacket packet) throws Exception {
         String groupId = packet.getGroupId();

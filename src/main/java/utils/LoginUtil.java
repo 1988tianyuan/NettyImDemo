@@ -13,6 +13,11 @@ public class LoginUtil {
         channel.attr(Constants.SESSION).set(session);
     }
 
+    public static void markAsLogout(Channel channel) {
+        channel.attr(Constants.LOGIN).set(false);
+        channel.attr(Constants.SESSION).set(null);
+    }
+
     public static boolean hasLogin(Channel channel){
         Attribute<Boolean> loginAttr = channel.attr(Constants.LOGIN);
         Attribute<Session> sessionAttribute = channel.attr(Constants.SESSION);

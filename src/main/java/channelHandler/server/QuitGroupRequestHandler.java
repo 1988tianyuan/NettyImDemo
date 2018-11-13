@@ -1,5 +1,6 @@
 package channelHandler.server;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
@@ -9,7 +10,12 @@ import protocal.model.QuitGroupResponsePacket;
 import protocal.model.Session;
 import utils.SessionUtil;
 
+@ChannelHandler.Sharable
 public class QuitGroupRequestHandler extends SimpleChannelInboundHandler<QuitGroupRequestPacket> {
+
+    public static final QuitGroupRequestHandler INSTANCE = new QuitGroupRequestHandler();
+    private QuitGroupRequestHandler() {}
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, QuitGroupRequestPacket packet) throws Exception {
         String groupId = packet.getGroupId();

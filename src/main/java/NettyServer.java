@@ -46,13 +46,8 @@ public class NettyServer {
 //                                        .addLast(new LifeCycleTestHandler())
                                         .addLast(PacketCodecHandler.INSTANCE)
                                         .addLast(LoginRequestHandler.INSTANCE)
-                                        .addLast(new AuthHandler())
-                                        .addLast(new CreateGroupRequestHandler())
-                                        .addLast(new JoinGroupRequestHandler())
-                                        .addLast(new MemberListRequestHandler())
-                                        .addLast(new QuitGroupRequestHandler())
-                                        .addLast(new GroupMsgRequestHandler())
-                                        .addLast(new MessageRequestHandler())
+                                        .addLast(AuthHandler.INSTANCE)
+                                        .addLast(IMServerHandler.INSTANCE)
                                         .addLast(new ExceptionCaughtHandler());
                            }
                        })
