@@ -14,7 +14,8 @@ public enum Command {
     MEMBER_REQUEST((byte) 11),
     MEMBER_RESPONSE((byte) 12),
     GROUP_MSG_REQUEST((byte) 13),
-    LOGOUT_REQUEST((byte) 14);
+    LOGOUT_REQUEST((byte) 14),
+    HEART_BEAT_REQUEST((byte) 15);
 
     private byte value;
 

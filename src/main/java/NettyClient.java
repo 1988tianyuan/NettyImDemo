@@ -40,7 +40,7 @@ public class NettyClient {
 					 protected void initChannel(NioSocketChannel nioSocketChannel) {
 					 	//添加ClientHandler，连接上后向服务器端传输数据
 						 nioSocketChannel.pipeline()
-								 .addLast(new ExceptionCaughtHandler())
+								 .addLast(new HeartBeatTimerHandler())
 								 .addLast(new Spliter())
 								 .addLast(PacketCodecHandler.INSTANCE)
 						 		 .addLast(new LoginResponseHandler())
@@ -49,7 +49,8 @@ public class NettyClient {
 								 .addLast(new MemberListResponseHandler())
 								 .addLast(new GroupMsgResponseHandler())
 								 .addLast(new QuitGroupResponseHandler())
-						 		 .addLast(new MessageResponseHandler());
+						 		 .addLast(new MessageResponseHandler())
+						         .addLast(new ExceptionCaughtHandler());
 					 }
 				 }).attr(AttributeKey.newInstance("attrName"), "attrValue")
 				 .option(ChannelOption.SO_KEEPALIVE, true)

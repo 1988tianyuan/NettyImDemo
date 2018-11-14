@@ -74,6 +74,10 @@ public class PacketCodeC {
                 return MemberListResponsePacket.class;
             case 13:
                 return GroupMessageRequestPacket.class;
+            case 14:
+                return LogoutRequestPacket.class;
+            case 15:
+                return HeartBeatRequestPacket.class;
             default:
                 return null;
         }

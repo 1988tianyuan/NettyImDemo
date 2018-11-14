@@ -42,10 +42,12 @@ public class NettyServer {
                            protected void initChannel(NioSocketChannel nioSocketChannel){
                                //（责任链模式）pipeline添加逻辑处理器，当接收到客户端数据时按顺序执行回调
                                 nioSocketChannel.pipeline()
+                                        .addLast(new IMIdleStateHandler())
                                         .addLast(new Spliter())
 //                                        .addLast(new LifeCycleTestHandler())
                                         .addLast(PacketCodecHandler.INSTANCE)
                                         .addLast(LoginRequestHandler.INSTANCE)
+                                        .addLast(new HeartBeatRequestHandler())
                                         .addLast(AuthHandler.INSTANCE)
                                         .addLast(IMServerHandler.INSTANCE)
                                         .addLast(new ExceptionCaughtHandler());

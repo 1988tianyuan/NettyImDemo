@@ -30,7 +30,6 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
         LoginResponsePacket lrpPacket = loginCheck(packet, channelHandlerContext);
 
         currentChannel.writeAndFlush(lrpPacket);
-        channelHandlerContext.fireChannelRead(packet);
     }
 
     @Override

@@ -9,6 +9,6 @@ public class ExceptionCaughtHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.error(ctx.channel().toString() + "出现异常：" + cause);
+        log.error(ctx.channel().toString() + "出现异常：" + cause, cause);
     }
 }
